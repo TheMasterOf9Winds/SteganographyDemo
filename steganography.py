@@ -2,7 +2,8 @@ from PIL import Image
 
 def message_to_binary(message):
     """Converts a string message to a binary string."""
-    binary = ' '.join(format(ord(char), '08b') for char in message)
+    binary = ''.join(format(ord(char), '08b') for char in message)
+    binary = binary.replace(' ', '')
     return binary
 
 def binary_to_message(binary):
@@ -40,28 +41,27 @@ def hide_message_in_image(image_file, message):
     pixels = list(image.getdata())
     new_pixels = []
     bit_count = 0
-    char_count = 0
-    current_byte = 0
+
     for pixel in pixels:
         r, g, b = pixel
-        if char_count < len(binary_message):
-            current_bit = int(binary_message[char_count])
-            current_byte = current_byte * 2 + current_bit
+        if bit_count < len(binary_message):
+            r = (r & ~1) | int(binary_message[bit_count])
             bit_count += 1
-            if bit_count == 8:
-                new_pixels.append((r, g, current_byte))
-                current_byte = 0
-                bit_count = 0
-                char_count += 1
+        if bit_count < len(binary_message):
+            g = (g & ~1) | int(binary_message[bit_count])
+            bit_count += 1
+        if bit_count < len(binary_message):
+            b = (b & ~1) | int(binary_message[bit_count])
+            bit_count += 1
         new_pixels.append((r, g, b))
 
-    # Create new image with hidden message
+    # Create a new image with the modified pixels
     new_image = Image.new('RGB', (width, height))
     new_image.putdata(new_pixels)
+    new_image.save('hidden_message_image.png')
 
-    # Save new image
-    new_image.save('S_image.png')
-    print("Message hidden in image successfully.")
+# Example usage
+hide_message_in_image('input_image.png', 'Hello, World!')
 
 def reveal_message_in_image(image_file):
     """Reveals a hidden message within an image using steganography."""
@@ -95,5 +95,3 @@ def reveal_message_in_image(image_file):
     # Convert binary message to string message
     message = binary_to_message(binary_message)
     return message
-
-    
