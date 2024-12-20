@@ -60,9 +60,6 @@ def hide_message_in_image(image_file, message):
     new_image.putdata(new_pixels)
     new_image.save('hidden_message_image.png')
 
-# Example usage
-hide_message_in_image('input_image.png', 'Hello, World!')
-
 def reveal_message_in_image(image_file):
     """Reveals a hidden message within an image using steganography."""
 
