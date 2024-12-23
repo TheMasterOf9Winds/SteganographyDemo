@@ -32,27 +32,28 @@ def hide_message_in_image(image_file, message):
 
     # Check if message is too long
     if len(binary_message) > max_chars:
-        raise ValueError("Message too long to hide in image.")
-    
+        raise ValueError("Message is too long to hide in the image.")
+
     # Add end of message marker
     binary_message += '11111111'
 
-    # Hide message in image pixels
+    # Convert image to list of pixels
     pixels = list(image.getdata())
-    new_pixels = []
-    bit_count = 0
 
+    # Modify pixels to hide the message
+    new_pixels = []
+    binary_index = 0
     for pixel in pixels:
         r, g, b = pixel
-        if bit_count < len(binary_message):
-            r = (r & ~1) | int(binary_message[bit_count])
-            bit_count += 1
-        if bit_count < len(binary_message):
-            g = (g & ~1) | int(binary_message[bit_count])
-            bit_count += 1
-        if bit_count < len(binary_message):
-            b = (b & ~1) | int(binary_message[bit_count])
-            bit_count += 1
+        if binary_index < len(binary_message):
+            r = (r & ~1) | int(binary_message[binary_index])
+            binary_index += 1
+        if binary_index < len(binary_message):
+            g = (g & ~1) | int(binary_message[binary_index])
+            binary_index += 1
+        if binary_index < len(binary_message):
+            b = (b & ~1) | int(binary_message[binary_index])
+            binary_index += 1
         new_pixels.append((r, g, b))
 
     # Create a new image with the modified pixels
@@ -74,21 +75,19 @@ def reveal_message_in_image(image_file):
     # Extract message from image pixels
     pixels = list(image.getdata())
     binary_message = ''
-    char_count = 0
-    current_byte = 0
+    end_marker_found = False
     for pixel in pixels:
+        if end_marker_found:
+            break
         r, g, b = pixel
-        if char_count < 8:
-            current_bit = b % 2
-            current_byte = current_byte * 2 + current_bit
-            char_count += 1
-            if char_count == 8:
-                if current_byte == 255:
-                    break
-                binary_message += chr(current_byte)
-                current_byte = 0
-                char_count = 0
-    
-    # Convert binary message to string message
-    message = binary_to_message(binary_message)
+        bits_from_pixel = [r & 1, g & 1, b & 1]
+        for bit in bits_from_pixel:
+            if len(binary_message) % 8 == 0 and binary_message.endswith('11111111'):
+                end_marker_found = True
+                break
+            else:
+                binary_message += str(bit)
+
+    # Convert binary message to string without the end marker
+    message = binary_to_message(binary_message[:-8])
     return message

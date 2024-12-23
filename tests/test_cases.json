@@ -1,0 +1,21 @@
+{
+    "message_to_binary": [
+        {"message": "hello", "expected_binary": "0110100001100101011011000110110001101111"},
+        {"message": "world", "expected_binary": "0111011101101111011100100110110001100100"},
+        {"message": "", "expected_binary": ""},
+        {"message": "123", "expected_binary": "001100010011001000110011"}
+    ],
+    "binary_to_message": [
+        {"binary": "0110100001100101011011000110110001101111", "expected_message": "hello"},
+        {"binary": "0111011101101111011100100110110001100100", "expected_message": "world"},
+        {"binary": "", "expected_message": ""},
+        {"binary": "001100010011001000110011", "expected_message": "123"}
+    ],
+    "hide_and_reveal_message_in_image": [
+        {"message": "hello"},
+        {"message": "world"},
+        {"message": "123"},
+        {"message": ""},
+        {"message": "oijawo;egonaweoigjhaoiwerjghawegi"}
+    ]
+}
