@@ -31,13 +31,13 @@ To hide a message within an image, use the `hide_message_in_image` function. Thi
 
 Example:
 ```python
-from steganography import hide_message_in_image, extract_message_from_image
+from steganography import hide_message_in_image, reveal_message_in_image
 
 # Hide a message
 hide_message_in_image('input_image.png', 'Secret Message')
 
 # Extract the hidden message
-message = extract_message_from_image('hidden_message_image.png')
+message = reveal_message_in_image('hidden_message_image.png')
 print('Extracted Message:', message)
 ```
 
